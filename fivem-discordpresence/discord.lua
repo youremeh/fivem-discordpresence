@@ -1,24 +1,27 @@
-CreateThread(function()
+Citizen.CreateThread(function()
 	while true do
-		Wait(1000)
-		local x,y,z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+		local pedID = PlayerPedId()
+		local x,y,z = table.unpack(GetEntityCoords(pedID, true))
 		local StreetHash = GetStreetNameAtCoord(x, y, z)
+		Citizen.Wait(1000)
 		if StreetHash ~= nil then
 			StreetName = GetStreetNameFromHashKey(StreetHash)
-			local VehName = GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))))
-			if VehName == "NULL" then return "Vehicle" end
-			if IsPedOnFoot(PlayerPedId()) and not IsEntityInWater(PlayerPedId()) then
-				if IsPedSprinting(PlayerPedId()) then
+			if IsPedOnFoot(pedID) and not IsEntityInWater(pedID) then
+				local VehName = GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(pedID)))
+				if VehName == "NULL" then return "Vehicle" end
+				if IsPedSprinting(pedID) then
 					SetRichPresence("Sprinting down "..StreetName)
-				elseif IsPedRunning(PlayerPedId()) then
+				elseif IsPedRunning(pedID) then
 					SetRichPresence("Running down "..StreetName)
-				elseif IsPedWalking(PlayerPedId()) then
+				elseif IsPedWalking(pedID) then
 					SetRichPresence("Walking down "..StreetName)
-				elseif IsPedStill(PlayerPedId()) then
+				elseif IsPedStill(pedID) then
 					SetRichPresence("Standing on "..StreetName)
 				end
-			elseif GetVehiclePedIsUsing(PlayerPedId()) ~= nil and not IsPedInAnyHeli(PlayerPedId()) and not IsPedInAnyPlane(PlayerPedId()) and not IsPedOnFoot(PlayerPedId()) and not IsPedInAnySub(PlayerPedId()) and not IsPedInAnyBoat(PlayerPedId()) then
-				local MPH = math.ceil(GetEntitySpeed(GetVehiclePedIsUsing(PlayerPedId())) * 2.236936)
+			elseif GetVehiclePedIsUsing(pedID) ~= nil and not IsPedInAnyHeli(pedID) and not IsPedInAnyPlane(pedID) and not IsPedOnFoot(pedID) and not IsPedInAnySub(pedID) and not IsPedInAnyBoat(pedID) then
+				local MPH = math.ceil(GetEntitySpeed(GetVehiclePedIsUsing(pedID)) * 2.236936)
+				local VehName = GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(pedID)))
+				if VehName == "NULL" then return "Vehicle" end
 				if MPH > 70 then
 					SetRichPresence("Speeding down "..StreetName.." in a "..VehName)
 				elseif MPH <= 70 and MPH > 1 then
@@ -26,17 +29,21 @@ CreateThread(function()
 				elseif MPH == 0 then
 					SetRichPresence("Parked on "..StreetName.." in a "..VehName)
 				end
-			elseif IsPedInAnyHeli(PlayerPedId()) or IsPedInAnyPlane(PlayerPedId()) then
-				if IsEntityInAir(GetVehiclePedIsUsing(PlayerPedId())) or GetEntityHeightAboveGround(GetVehiclePedIsUsing(PlayerPedId())) > 5.0 then
+			elseif IsPedInAnyHeli(pedID) or IsPedInAnyPlane(pedID) then
+				local VehName = GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(pedID)))
+				if VehName == "NULL" then return "Vehicle" end
+				if IsEntityInAir(GetVehiclePedIsUsing(pedID)) or GetEntityHeightAboveGround(GetVehiclePedIsUsing(pedID)) > 5.0 then
 					SetRichPresence("Flying over "..StreetName.." in a "..VehName)
 				else
 					SetRichPresence("Landed at "..StreetName.." in a "..VehName)
 				end
-			elseif IsEntityInWater(PlayerPedId()) then
+			elseif IsEntityInWater(pedID) then
 				SetRichPresence("Swimming around")
-			elseif IsPedInAnyBoat(PlayerPedId()) and IsEntityInWater(GetVehiclePedIsUsing(PlayerPedId())) then
+			elseif IsPedInAnyBoat(pedID) and IsEntityInWater(GetVehiclePedIsUsing(pedID)) then
+				local VehName = GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(pedID)))
+				if VehName == "NULL" then return "Vehicle" end
 				SetRichPresence("Sailing around in a "..VehName)
-			elseif IsPedInAnySub(PlayerPedId()) and IsEntityInWater(GetVehiclePedIsUsing(PlayerPedId())) then
+			elseif IsPedInAnySub(pedID) and IsEntityInWater(GetVehiclePedIsUsing(pedID)) then
 				SetRichPresence("In a yellow submarine")
 			end
 		end
