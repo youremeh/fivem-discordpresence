@@ -5,7 +5,7 @@ Citizen.CreateThread(function()
 		local StreetHash = GetStreetNameAtCoord(x, y, z)
 		Citizen.Wait(1000)
 		if StreetHash ~= nil then
-			StreetName = GetStreetNameFromHashKey(StreetHash)
+			local StreetName = GetStreetNameFromHashKey(StreetHash)
 			if IsPedOnFoot(pedID) and not IsEntityInWater(pedID) then
 				if IsPedSprinting(pedID) then
 					SetRichPresence("Sprinting down "..StreetName)
